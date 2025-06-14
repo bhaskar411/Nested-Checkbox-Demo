@@ -1,5 +1,36 @@
 <div class="content" role="main">
   <h1>Welcome to {{ title }}!</h1>
-  <h2>Start editing to see some magic happen</h2>
+
+  <ng-template #recursiveList let-items>
+    <ul>
+      <li *ngFor="let item of items">
+        <label>
+          <input
+            type="checkbox"
+            [checked]="checkedItems.has(item.id)"
+            (ontoggle)="onToggle(item.id)"
+          />
+          {{ item.name }}
+        </label>
+
+        <ng-container *ngIf="!!item.children">
+          <ng-container
+            *ngTemplateOutlet="
+              recursiveList;
+              context: { $implicit: item?.children }
+            "
+          >
+          </ng-container>
+        </ng-container>
+      </li>
+    </ul>
+  </ng-template>
+
+  <div>
+    <ng-container
+      *ngTemplateOutlet="recursiveList; context: { $implicit: checkboxData }"
+    >
+    </ng-container>
+  </div>
 </div>
 <router-outlet />
