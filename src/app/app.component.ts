@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { stateService } from './state.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   title = 'Nested Checkbox';
-  checkedItems = new Set<number>([1, 2, 5]);
+  stateService = inject(stateService);
+  checkedItems = new Set<number>();
   checkboxData = [
     {
       id: 1,
@@ -46,8 +48,15 @@ export class AppComponent implements OnInit {
       ],
     },
   ];
+  constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.stateService.checkedids$.subscribe((set) => {
+      this.checkedItems = set;
+    });
+  }
 
-  onToggle(id: number): void {}
+  onToggle(id: number): void {
+    this.stateService.toggle(id);
+  }
 }
