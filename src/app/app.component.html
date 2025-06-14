@@ -8,7 +8,7 @@
           <input
             type="checkbox"
             [checked]="checkedItems.has(item.id)"
-            (ontoggle)="onToggle(item.id)"
+            (change)="onToggle(item)"
           />
           {{ item.name }}
         </label>
@@ -28,7 +28,7 @@
 
   <div>
     <ng-container
-      *ngTemplateOutlet="recursiveList; context: { $implicit: checkboxData }"
+      *ngTemplateOutlet="recursiveList; context: { $implicit: Data }"
     >
     </ng-container>
   </div>

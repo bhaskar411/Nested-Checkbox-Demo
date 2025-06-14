@@ -14,49 +14,30 @@ export class AppComponent implements OnInit {
   title = 'Nested Checkbox';
   stateService = inject(stateService);
   checkedItems = new Set<number>();
-  checkboxData = [
-    {
-      id: 1,
-      name: 'Fruits',
-      children: [
-        {
-          id: 2,
-          name: 'Banana',
-          children: [
-            { id: 10, name: 'Cavendish' },
-            { id: 11, name: 'Lady Finger' },
-          ],
-        },
-        { id: 3, name: 'Apple' },
-        { id: 4, name: 'Mango' },
-        { id: 5, name: 'Strawberry' },
-      ],
-    },
-    {
-      id: 6,
-      name: 'Vegetables',
-      children: [
-        { id: 7, name: 'Carrot' },
-        {
-          id: 8,
-          name: 'Broccoli',
-          children: [
-            { id: 12, name: 'Calabrese' },
-            { id: 13, name: 'Sprouting' },
-          ],
-        },
-      ],
-    },
-  ];
+  Data: any[] = [];
+
   constructor() {}
 
   ngOnInit(): void {
     this.stateService.checkedids$.subscribe((set) => {
       this.checkedItems = set;
     });
+
+    this.Data = this.stateService.checkboxData;
   }
 
-  onToggle(id: number): void {
-    this.stateService.toggle(id);
+  onToggle(item: any): void {
+    this.stateService.toggle(item.id, false);
+    if (!!item.children) this.toggleChildren(item);
+  }
+
+  toggleChildren(parent: any): void {
+    parent?.children.forEach((child: any) => {
+      this.stateService.toggle(
+        child.id,
+        this.stateService.toogleCheck(parent.id)
+      );
+      if (!!child.children) this.toggleChildren(child);
+    });
   }
 }
