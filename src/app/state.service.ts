@@ -40,21 +40,42 @@ export class stateService {
 
   public checkedids$ = this.checkedids.asObservable();
 
-  toggle(id: number, parent: boolean) {
+  toggle(id: number) {
     const current = new Set(this.checkedids.value);
 
-    if (current.has(id) && !parent) current.delete(id);
+    if (current.has(id)) current.delete(id);
     else current.add(id);
-
-    console.log(current, 'hbv');
     this.checkedids.next(current);
+    this.checkboxData.forEach((parent) => this.verifyChecked(parent));
   }
 
-  toogleCheck(id: number): boolean {
+  toggleCheck(id: number): boolean {
     const current = new Set(this.checkedids.value);
     if (current.has(id)) return true;
     return false;
   }
 
-  toggleParent() {}
+  toggleChildren(parent: any): void {
+    parent?.children.forEach((child: any) => {
+      this.toggle(child.id);
+      if (!!child.children) this.toggleChildren(child);
+    });
+  }
+
+  verifyChecked(node: any): boolean {
+    const current = new Set(this.checkedids.value);
+    if (!!!node.children) return this.toggleCheck(node.id);
+
+    const allChildrenChecked = node?.children?.every((child: { id: number }) =>
+      this.verifyChecked(child)
+    );
+    if (allChildrenChecked) current.add(node.id);
+    else {
+      if (current.has(node.id)) current.delete(node.id);
+    }
+    console.log(current);
+    this.checkedids.next(current);
+
+    return allChildrenChecked;
+  }
 }

@@ -27,17 +27,7 @@ export class AppComponent implements OnInit {
   }
 
   onToggle(item: any): void {
-    this.stateService.toggle(item.id, false);
-    if (!!item.children) this.toggleChildren(item);
-  }
-
-  toggleChildren(parent: any): void {
-    parent?.children.forEach((child: any) => {
-      this.stateService.toggle(
-        child.id,
-        this.stateService.toogleCheck(parent.id)
-      );
-      if (!!child.children) this.toggleChildren(child);
-    });
+    this.stateService.toggle(item.id);
+    if (!!item.children) this.stateService.toggleChildren(item);
   }
 }
